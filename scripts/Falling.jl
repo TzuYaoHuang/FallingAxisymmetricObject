@@ -1,21 +1,31 @@
 using WaterLily, StaticArrays, Plots, Printf
 using WriteVTK
 using WaterLily: total_force
+using CUDA
 
-let
+using Pkg; Pkg.add(url="https://github.com/weymouth/BiotSavartBCs.jl.git", rev="main")
+using BiotSavartBCs
+
+function main()
+    # +++ Simulation parameters +++
+    mem = CuArray
+    T = Float32
+    zeroT = zero(T)
+
     # +++ Controlling flow parameters +++
-    N = 64
+    N = 64  # number of grid
     g = 1
     Re = 1e5
 
     # +++ Derived flow parameters +++
     R = N÷4
-    U = sqrt(g*R)
+    U = T(sqrt(g*R))
     ν = U*R/Re
-    center= SA[0,0,N/3]
+    center= SA{T}[0,0,N/3]
+    uBC(i,x,t) = ifelse(i==3, U, zeroT)
 
     body = AutoBody((x,t) -> √sum(abs2, x.-center)-R)
-    sim = Simulation((N÷2,N÷2,2N), (0,0,U), R; ν, body)
+    sim = BiotSimulation((N÷2,N÷2,2N), uBC, R; ν, body, mem, T, U)
 
     vtk_v(a::AbstractSimulation) = a.flow.u/a.U |> Array
     vtk_p(a::AbstractSimulation) = a.flow.p/(0.5a.U^2) |> Array
@@ -32,5 +42,6 @@ let
     end
     close(wr)
 
-
 end
+
+main()
