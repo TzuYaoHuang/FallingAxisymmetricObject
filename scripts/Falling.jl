@@ -1,19 +1,19 @@
-using WaterLily, StaticArrays, Plots, Printf
-using WriteVTK
-using WaterLily: total_force
-using CUDA
+using StaticArrays, Plots, Printf, WriteVTK
 
-using Pkg; Pkg.add(url="https://github.com/weymouth/BiotSavartBCs.jl.git", rev="main")
+using WaterLily, ParametricBodies
 using BiotSavartBCs
+
+using CUDA
 
 function main()
     # +++ Simulation parameters +++
     mem = CuArray
     T = Float32
     zeroT = zero(T)
+    oneT  = one(T)
 
     # +++ Controlling flow parameters +++
-    N = 64  # number of grid
+    N = 96  # number of grid
     g = 1
     Re = 1e5
 
@@ -21,10 +21,22 @@ function main()
     R = N÷4
     U = T(sqrt(g*R))
     ν = U*R/Re
-    center= SA{T}[0,0,N/3]
+    center= SA{T}[0,0,2N/3]
     uBC(i,x,t) = ifelse(i==3, U, zeroT)
 
-    body = AutoBody((x,t) -> √sum(abs2, x.-center)-R)
+    # +++ Body Definition -- Sphere
+    sphere = AutoBody((x,t) -> √sum(abs2, x.-center)-R)
+    # +++ Body Definition -- Prolate
+    γ = T(1.5)
+    function prolateSDF(x,t)
+        X,Y,Z = @. x-center
+        F = (X/R)^2 + (Y/R)^2 + (Z/(γ*R))^2 - oneT
+        gradnorm = sqrt((2X/R^2)^2 + (2Y/R^2)^2 + (2Z/(γ*R)^2)^2)
+        return F/gradnorm
+    end
+    prolate  = AutoBody(prolateSDF)
+
+    body = prolate
     sim = BiotSimulation((N÷2,N÷2,2N), uBC, R; ν, body, mem, T, U)
 
     vtk_v(a::AbstractSimulation) = a.flow.u/a.U |> Array
