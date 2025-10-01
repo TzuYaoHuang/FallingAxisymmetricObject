@@ -13,6 +13,7 @@ Manifest.toml
 *.ogv
 
 # data file
+*.csv
 *.dat
 *.txt
 *.log

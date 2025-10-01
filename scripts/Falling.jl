@@ -1,4 +1,4 @@
-using StaticArrays, Plots, Printf, WriteVTK
+using StaticArrays, Plots, Printf, WriteVTK, CSV, Tables
 
 using WaterLily, ParametricBodies
 using BiotSavartBCs
@@ -13,12 +13,13 @@ function main()
     oneT  = one(T)
 
     # +++ Controlling flow parameters +++
-    N = 96  # number of grid
+    N = 48  # number of grid
     g = 1
     Re = 1e5
 
     # +++ Derived flow parameters +++
     R = N÷4
+    A = π*R^2/4
     U = T(sqrt(g*R))
     ν = U*R/Re
     center= SA{T}[0,0,2N/3]
@@ -50,26 +51,47 @@ function main()
     NACA(s) = thickness*5*(0.2969f0s-0.126f0s^2-0.3516f0s^4+0.2843f0s^6-0.1036f0s^8)
     curve(s,t) = 2R/thickness*SA[(1-s)^2-maxThick_x,NACA(1-s)] .+ SA[center[3],0]
     revolve(x::SVector{3},t) = SA[x[3],hypot(x[1],x[2])] # revolve around x[3]-axis
-
     teardrop = ParametricBody(curve,HashedLocator(curve,(0,1);T,mem);map=revolve,ndims=3)
 
-    body = teardrop
-    sim = BiotSimulation((N÷2,N÷2,3N), uBC, R; ν, body, mem, T, U)
+    # +++ List of all body +++
+    bodies = [sphere, prolate, bullet, teardrop]
+    bodyName=["sphere", "prolate", "bullet", "teardrop"]
+    ; NBody = length(bodies)
 
+    # ++++ VTK Writer function
     vtk_v(a::AbstractSimulation) = a.flow.u/a.U |> Array
     vtk_p(a::AbstractSimulation) = a.flow.p/(0.5a.U^2) |> Array
     vtk_λ₂(a::AbstractSimulation)  = (@inside a.flow.σ[I] = WaterLily.λ₂(I,a.flow.u)*a.L/a.U; a.flow.σ |> Array)
     vtk_body(a::AbstractSimulation) = (measure_sdf!(a.flow.σ, a.body, WaterLily.time(a.flow)); a.flow.σ |> Array)
     custom_write_attributes = Dict("u" => vtk_v, "p" => vtk_p, "λ₂" => vtk_λ₂, "d" => vtk_body)
 
-    wr = vtkWriter("FallingBody"; attrib=custom_write_attributes)
+    # ++++ Generate Simulation
+    tEnd = 1
+    simTime = 0:0.1:tEnd; NTime = length(simTime)
+    CdList = zeros(NBody, NTime) 
+    for (iBody, body)∈enumerate(bodies)
+        sim = BiotSimulation((N÷2,N÷2,3N), uBC, R; ν, body, mem, T, U)
+        wr = vtkWriter("Falling_$(bodyName[iBody])"; attrib=custom_write_attributes)
 
-    @time for tᵢ in range(0.,2;step=0.1)
-        sim_step!(sim,tᵢ;remeasure=true)
-        @printf("tU/L= %5.2f\n", sim_time(sim))
-        save!(wr, sim)
+        # Running Simulation!
+        for (iTime,tᵢ) in enumerate(simTime)
+            sim_step!(sim,tᵢ;remeasure=true)
+            @printf("tU/L= %5.2f\n", sim_time(sim))
+            save!(wr, sim)
+            CdList[iBody,iTime] = -WaterLily.total_force(sim)[3]/(0.5*sim.U^2*A)
+        end
+        close(wr)
     end
-    close(wr)
+    CSV.write("../figure/Cd.csv",  Tables.table(CdList), writeheader=false)
+
+    # +++ Post-processing
+    for I∈CartesianIndices(CdList) CdList[I] = ifelse(abs(CdList[I])>10, NaN, CdList[I]) end
+    plot()
+    for (iBody, body)∈enumerate(bodies)
+        plot!(simTime, CdList[iBody,:],label=bodyName[iBody])
+    end
+    plot!(ylimit=(0,1), xlimit=(0,tEnd))
+    savefig("../figure/CD_N$(N).png")
 
 end
 

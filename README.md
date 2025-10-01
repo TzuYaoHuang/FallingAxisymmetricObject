@@ -22,7 +22,7 @@ Second, clone this repo to some local folder
 $ git clone https://github.com/TzuYaoHuang/FallingAxisymmetricObject.git
 ```
 
-Third, go to directory `scripts` and initialize the environment
+Third, go to directory `scripts/` and initialize the environment
 ```bash
 $ cd FallingAxisymmetricObject/scripts
 $ julia --project -E 'using Pkg; Pkg.add(url="https://github.com/weymouth/BiotSavartBCs.jl.git", rev=true); Pkg.instantiate()'
@@ -34,3 +34,4 @@ $ julia --project -t auto Falling.jl
 ```
 
 Then there will be `.pvd` files generated at the end of the simulation. You could use ParaView to view the result!
+The drag coefficient plot comparison and data are also under directories `figure/`.
