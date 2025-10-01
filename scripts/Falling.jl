@@ -38,7 +38,7 @@ function main()
     # +++ Body Definition -- Bullet
     cylinder = AutoBody(
         (x,t) -> max(
-            abs(x[3]-center[3]) - R, 
+            abs(x[3]-(center[3]+R)) - R, 
             sqrt((x[1]-center[1])^2 + (x[2]-center[2])^2) - R
         )
     )
@@ -51,7 +51,7 @@ function main()
 
     teardrop = ParametricBody(curve,HashedLocator(curve,(0,1);T,mem);map=revolve)
 
-    body = prolate
+    body = bullet
     sim = BiotSimulation((N÷2,N÷2,2N), uBC, R; ν, body, mem, T, U)
 
     vtk_v(a::AbstractSimulation) = a.flow.u/a.U |> Array
