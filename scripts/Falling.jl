@@ -45,14 +45,16 @@ function main()
     bullet = sphere + cylinder
     # +++ Body Definition -- NACA teardrop
     NACA_twodigits = 32
-    NACA(s) = T(NACA_twodigits/100)*5*(0.2969f0s-0.126f0s^2-0.3516f0s^4+0.2843f0s^6-0.1036f0s^8)
-    curve(s,t) = L*SA[(1-s)^2,NACA(1-s)]
+    thickness = T(NACA_twodigits/100)
+    maxThick_x = T(0.3)
+    NACA(s) = thickness*5*(0.2969f0s-0.126f0s^2-0.3516f0s^4+0.2843f0s^6-0.1036f0s^8)
+    curve(s,t) = 2R/thickness*SA[(1-s)^2-maxThick_x,NACA(1-s)] .+ SA[center[3],0]
     revolve(x::SVector{3},t) = SA[x[3],hypot(x[1],x[2])] # revolve around x[3]-axis
 
-    teardrop = ParametricBody(curve,HashedLocator(curve,(0,1);T,mem);map=revolve)
+    teardrop = ParametricBody(curve,HashedLocator(curve,(0,1);T,mem);map=revolve,ndims=3)
 
-    body = bullet
-    sim = BiotSimulation((N÷2,N÷2,2N), uBC, R; ν, body, mem, T, U)
+    body = teardrop
+    sim = BiotSimulation((N÷2,N÷2,3N), uBC, R; ν, body, mem, T, U)
 
     vtk_v(a::AbstractSimulation) = a.flow.u/a.U |> Array
     vtk_p(a::AbstractSimulation) = a.flow.p/(0.5a.U^2) |> Array
@@ -62,7 +64,7 @@ function main()
 
     wr = vtkWriter("FallingBody"; attrib=custom_write_attributes)
 
-    @time for tᵢ in range(0.,20;step=0.1)
+    @time for tᵢ in range(0.,2;step=0.1)
         sim_step!(sim,tᵢ;remeasure=true)
         @printf("tU/L= %5.2f\n", sim_time(sim))
         save!(wr, sim)
