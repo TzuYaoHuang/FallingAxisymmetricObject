@@ -13,15 +13,13 @@ function main()
     oneT  = one(T)
 
     # +++ Controlling flow parameters +++
-    N = 48  # number of grid
-    g = 1
-    Re = 1e5
+    N = 192  # number of grid
+    U = T(1)
 
     # +++ Derived flow parameters +++
     R = N÷4
+    D = 2R
     A = π*R^2/4
-    U = T(sqrt(g*R))
-    ν = U*R/Re
     center= SA{T}[0,0,2N/3]
     uBC(i,x,t) = ifelse(i==3, U, zeroT)
 
@@ -45,7 +43,7 @@ function main()
     )
     bullet = sphere + cylinder
     # +++ Body Definition -- NACA teardrop
-    NACA_twodigits = 32
+    NACA_twodigits = 31.0559
     thickness = T(NACA_twodigits/100)
     maxThick_x = T(0.3)
     NACA(s) = thickness*5*(0.2969f0s-0.126f0s^2-0.3516f0s^4+0.2843f0s^6-0.1036f0s^8)
@@ -55,8 +53,10 @@ function main()
 
     # +++ List of all body +++
     bodies = [sphere, prolate, bullet, teardrop]
+    ReList = [9780, 19005, 12474, 101769]
+    νList = U*D./ReList
     bodyName=["sphere", "prolate", "bullet", "teardrop"]
-    ; NBody = length(bodies)
+    NBody = length(bodies)
 
     # ++++ VTK Writer function
     vtk_v(a::AbstractSimulation) = a.flow.u/a.U |> Array
@@ -66,11 +66,12 @@ function main()
     custom_write_attributes = Dict("u" => vtk_v, "p" => vtk_p, "λ₂" => vtk_λ₂, "d" => vtk_body)
 
     # ++++ Generate Simulation
-    tEnd = 1
+    tEnd = 30
     simTime = 0:0.1:tEnd; NTime = length(simTime)
     CdList = zeros(NBody, NTime) 
     for (iBody, body)∈enumerate(bodies)
-        sim = BiotSimulation((N÷2,N÷2,3N), uBC, R; ν, body, mem, T, U)
+        println("$(bodyName[iBody]) is falling now.")
+        sim = BiotSimulation((N÷2,N÷2,3N), uBC, R; ν=νList[iBody], body, mem, T, U)
         wr = vtkWriter("Falling_$(bodyName[iBody])"; attrib=custom_write_attributes)
 
         # Running Simulation!
