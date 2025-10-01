@@ -35,6 +35,14 @@ function main()
         return F/gradnorm
     end
     prolate  = AutoBody(prolateSDF)
+    # +++ Body Definition -- Bullet
+    cylinder = AutoBody(
+        (x,t) -> max(
+            abs(x[3]-center[3]) - R, 
+            sqrt((x[1]-center[1])^2 + (x[2]-center[2])^2) - R
+        )
+    )
+    bullet = sphere + cylinder
 
     body = prolate
     sim = BiotSimulation((N÷2,N÷2,2N), uBC, R; ν, body, mem, T, U)
