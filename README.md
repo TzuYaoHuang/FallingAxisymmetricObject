@@ -1,6 +1,6 @@
 # FallingAxisymmetricObject
 
-[figure/FallingObjectSimulation.mp4](https://github.com/TzuYaoHuang/FallingAxisymmetricObject/blob/3003fd6c8e9aa6e10d04d5a00cf9a7268d5966e3/figure/FallingObjectSimulation.mp4)
+[![Falling objects](figure/FallingObjectSimulation.png)](https://youtu.be/4_bd3tomnOg)
 
 This repository is for Falling object demonstration in MT2461-25 in TU Delft lectured by Professor Gabriel Weymouth.
 The responsible TA is Manuel Cabral (Physics demo) and Tzu-Yao Huang (simulation scripts).
