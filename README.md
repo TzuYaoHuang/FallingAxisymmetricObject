@@ -1,11 +1,13 @@
 # FallingAxisymmetricObject
 
+[![Watch the video](figure/FallingObjectSimulation.png)](figure/FallingObjectSimulation.mp4)
+
 This repository is for Falling object demonstration in MT2461-25 in TU Delft lectured by Professor Gabriel Weymouth.
 The responsible TA is Manuel Cabral (Physics demo) and Tzu-Yao Huang (simulation scripts).
 
 ## File structures
 
-The file for 3D printer are stored in [ThreeD_Print](ThreeD_Print/) in STL format.
+The file for 3D printer are stored in [ThreeD_Object](ThreeD_Object/) in STL format.
 The object is sliced to half for simplicity.
 
 Related Julia and Python files are stored in [scripts](scripts/).
