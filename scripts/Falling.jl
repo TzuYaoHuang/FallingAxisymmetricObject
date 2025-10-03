@@ -5,6 +5,16 @@ using BiotSavartBCs
 
 using CUDA
 
+# Include the mirror in x and y plane
+import BiotSavartBCs: interaction,image,symmetry
+@inline function symmetry(ω,T,args...) # overwrite to add image influences
+    T₁,sgn₁ = image(T,size(ω),-1)
+    T₂,sgn₂ = image(T,size(ω),-2)
+    T₁₂,_   = image(T₁,size(ω),-2)
+    return interaction(ω,T,args...)+sgn₁*interaction(ω,T₁,args...)+
+        sgn₂*(interaction(ω,T₂,args...)+sgn₁*interaction(ω,T₁₂,args...))
+end
+
 function main()
     # +++ Simulation parameters +++
     mem = CuArray
@@ -71,7 +81,9 @@ function main()
     CdList = zeros(NBody, NTime) 
     for (iBody, body)∈enumerate(bodies)
         println("$(bodyName[iBody]) is falling now.")
-        sim = BiotSimulation((N÷2,N÷2,3N), uBC, R; ν=νList[iBody], body, mem, T, U)
+
+        # disable BiotSavartBCs in -x, and -y faces
+        sim = BiotSimulation((N÷2,N÷2,3N), uBC, R; ν=νList[iBody], body, mem, T, U, nonbiotfaces=(-1,-2))
         wr = vtkWriter("Falling_$(bodyName[iBody])"; attrib=custom_write_attributes)
 
         # Running Simulation!
