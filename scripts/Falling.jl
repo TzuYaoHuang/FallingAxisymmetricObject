@@ -70,7 +70,7 @@ function run(N; mem=CuArray, T=Float32, tEnd=30)
 
     # +++ List of all body +++
     bodies = [sphere, prolate, bullet, teardrop]
-    ReList = [9780, 19005, 12474, 101769]
+    ReList = [9994, 12241, 8316, 17311]
     νList = U*D./ReList
     bodyName=["Sphere", "Ellipsoid", "Bullet", "Teardrop"]
     NBody = length(bodies)
