@@ -1,0 +1,291 @@
+---
+title: "Ch. 5 Tutorial:"
+subtitle: "on Boundary Layers"
+date: today
+date-format: long
+author: 
+  - name: |
+      TA: Manuel Cabral <br> Lecturer: Gabriel D. Weymouth
+title-slide-attributes:
+  data-background-color: "#00ADEF"
+  # Set the white logo as a background image for the title slide
+  data-background-image: "imgs/TUDelft_logo_white.png"
+  # Position and size the logo as a background element
+  data-background-position: "bottom 10px right 30px" # Adjust position
+  data-background-size: "170px"  
+format:
+  revealjs: 
+    embed-resources: true
+    slide-number: true
+    # chalkboard: 
+    #   theme: whiteboard
+    #   buttons: true
+    preview-links: auto
+    logo: imgs/TUDelft_logo.png 
+    css: styles.css
+---
+
+## 1. Drop test: Setup
+
+::: columns
+
+::: {.column width="50%"}
+![](imgs/drop_test.png){width=72.5%}
+:::
+
+::: {.column width="50%"}
+![](imgs/shapes_volume.png){width=100%}
+<br><br>
+![](imgs/order_cd.png){width=100%}
+:::
+
+:::
+
+## 1. Drop test: Setup
+
+::: columns
+
+::: {.column width="50%"}
+![](imgs/drop_test.png){width=72.5%}
+:::
+
+::: {.column width="50%"}
+![](imgs/shapes_volume_final.png){width=100%}
+:::
+
+:::
+
+## 1. Drop test: Drop time
+
+::: columns
+
+::: {.column width="50%"}
+![](imgs/drop_test.png){width=72.5%}
+:::
+
+::: {.column width="50%" .v-center}
+a. What is the object's terminal velocity?
+:::
+
+:::
+
+## 1. Drop test: Experiment
+
+<div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+  <div style="font-size: 200%; text-align: center;">
+    Let's try it!
+  </div>
+</div>
+
+## 1. Drop test: Experiment Results
+
+$$
+\begin{aligned}
+T_{sphere} &= \qquad\quad &C_d = \qquad\qquad C_{d,theo} &= 0.45 \\\\
+T_{ellipsoid} &= \qquad\quad &C_d = \qquad\qquad C_{d,theo} &= 0.30 \\\\
+T_{bullet} &= \qquad\quad &C_d = \qquad\qquad C_{d,theo} &= 0.65\\\\
+T_{NACA} &= \qquad\quad &C_d = \qquad\qquad C_{d,theo} &= 0.15
+\end{aligned}
+$$
+
+## 1. Drop test: Analysis
+
+![](videos/tracker_bullet.webm){width=100%}
+
+## 1. Drop test: Experiment Results
+
+$$
+\begin{aligned}
+T_{sphere} &= 3.63s \qquad &C_d = 0.78 \quad\qquad C_{d,theo} &= 0.45 \\\\
+T_{ellipsoid} &= 2.82s \quad &C_d = 0.47 \quad\qquad C_{d,theo} &= 0.30 \\\\
+T_{bullet} &= 3.08s \qquad &C_d = 0.56 \quad\qquad C_{d,theo} &= 0.65\\\\
+T_{NACA} &= 1.95s \qquad &C_d = 0.23 \quad\qquad C_{d,theo} &= 0.15
+\end{aligned}
+$$
+
+
+## 1. Drop test: Analysis
+::: columns
+
+::: {.column width="27%"}
+![](videos/exp_sphere.mp4){width=100%}
+:::
+
+::: {.column width="73%"}
+![](imgs/tracker_sphere.png){width=100%}
+:::
+
+:::
+
+
+## 1. Drop test: Coefficient of drag
+
+![](imgs/shapes_ordered_cd.png){width=50px}
+
+## 1. Drop test: Coefficient of drag
+
+![](imgs/shapes_sph_elli.png){width=50px}
+
+## 1. Drop test: Numerical Simulation
+
+
+<div style="display: flex; 
+            align-items: center; 
+            justify-content: center; /* <-- Changed to 'center' for minimum horizontal gap */
+            width: 100%; 
+            margin-top: -250px;       /* <-- INCREASED: Pulls content higher (adjust this value) */
+            margin-bottom: 0px;         
+            gap: 0px;">                   
+
+  <video src="videos/Sphere.mp4" 
+         data-autoplay  
+         style="transform: rotate(-90deg); 
+                height: 1000px; /* <-- INCREASED: Makes the video physically larger */
+                width: auto;
+                margin: 0;"></video>
+  
+  <video src="videos/Prolate.mp4"
+         data-autoplay  
+         style="transform: rotate(-90deg); 
+                height: 1000px; /* <-- INCREASED: Makes the video physically larger */
+                width: auto;
+                margin: 0;"></video>
+  
+  <img src="imgs/qr_code.png" style="width: 500px; height: auto;">
+
+  <img src="imgs/tzy_git.png" style="width: 500px; height: auto;">
+  
+</div>
+
+## 1. Drop test: Coefficient of drag
+
+![](imgs/shapes_sph_bul.png){width=50px}
+
+## 1. Drop test: Numerical Simulation
+
+
+<div style="display: flex; 
+            align-items: center; 
+            justify-content: center; /* <-- Changed to 'center' for minimum horizontal gap */
+            width: 100%; 
+            margin-top: -250px;       /* <-- INCREASED: Pulls content higher (adjust this value) */
+            margin-bottom: 0px;         
+            gap: 0px;">                   
+
+  <video src="videos/Sphere.mp4" autoplay loop muted 
+         data-autoplay  
+         style="transform: rotate(-90deg); 
+                height: 1000px; /* <-- INCREASED: Makes the video physically larger */
+                width: auto;
+                margin: 0;"></video>
+  
+  <video src="videos/Bullet.mp4" autoplay loop muted
+         data-autoplay   
+         style="transform: rotate(-90deg); 
+                height: 1000px; /* <-- INCREASED: Makes the video physically larger */
+                width: auto;
+                margin: 0;"></video>
+  
+  <img src="imgs/qr_code.png" style="width: 500px; height: auto;">
+
+  <img src="imgs/tzy_git.png" style="width: 500px; height: auto;">
+  
+</div>
+
+## 1. Drop test: Coefficient of drag
+
+![](imgs/shapes_sph_naca.png){width=50px}
+
+## 1. Drop test: Numerical Simulation
+
+
+<div style="display: flex; 
+            align-items: center; 
+            justify-content: center; /* <-- Changed to 'center' for minimum horizontal gap */
+            width: 100%; 
+            margin-top: -250px;       /* <-- INCREASED: Pulls content higher (adjust this value) */
+            margin-bottom: 0px;         
+            gap: 0px;">                   
+
+  <video src="videos/Sphere.mp4" autoplay loop muted 
+         data-autoplay  
+         style="transform: rotate(-90deg); 
+                height: 1000px; /* <-- INCREASED: Makes the video physically larger */
+                width: auto;
+                margin: 0;"></video>
+  
+  <video src="videos/Teardrop.mp4" autoplay loop muted
+         data-autoplay   
+         style="transform: rotate(-90deg); 
+                height: 1000px; /* <-- INCREASED: Makes the video physically larger */
+                width: auto;
+                margin: 0;"></video>
+  
+  <img src="imgs/qr_code.png" style="width: 500px; height: auto;">
+
+  <img src="imgs/tzy_git.png" style="width: 500px; height: auto;">
+  
+</div>
+
+## 2. Internal flow
+
+## 2. Fish Ladder
+
+![](imgs/fish_ladder.png){width=100%}
+
+## 2. Fish Ladder
+
+<!-- ![](imgs/fish_ladder.png){width=70%} -->
+
+a. Identify the key nondimensional parameter(s) that govern the flow. Explain why the *hydraulic diameter* is the relevant length scale for defining the Reynolds number in this problem.
+
+::: {.callout-note}
+The **hydraulic diameter**, $D_H$, is a metric that relates circular tubes with non-round tubes, and it is defined as:
+
+$$
+ D_H = \frac{4 \times \text{area of cross-section}}{\text{wetted perimeter of the cross-section}} = \frac{4hw}{2(h+w)}
+$$
+:::
+
+## 2. Fish Ladder
+
+![](imgs/fish_ladder_w_units.png){width=25%}
+
+b. Compute the Reynolds number for this system, and determine whether the flow is laminar or turbulent.
+
+## 2. Fish Ladder
+
+![](imgs/fish_ladder.png){width=70%}
+
+c. Calculate the maximum angle $\alpha$ such that the fish are still able to move past the dam.
+
+::: {.callout-tip}
+You will need an equation relating the pressure loss due to viscous shear forces along the pipe with the velocity of the fluid. Use the Darcy–Weisbach equation: $\frac{\Delta P}{L} = \frac{f}{D_h}\,\frac{\rho U^2}{2}$
+:::
+
+::: {.callout-tip}
+You will need to relate the Reynolds number with the friction factor $f$. Use a Moody diagram.
+:::
+
+## Fish Ladder: Moody diagram
+
+![](imgs/moody_diagram.png){width=100%}
+
+
+
+## Fish Ladder: Moody diagram
+
+![](imgs/moody_diagram.png){width=100%}
+
+::: {.callout-caution}
+The use of such diagram is typically an iterative process.
+:::
+
+
+## Thank you!
+
+<div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+  <div style="font-size: 150%; text-align: center;">
+    For any question, feel free to reach me at  mcabral@tudelft.nl, or at my office, 34 B-2-320.
+  </div>
+</div>

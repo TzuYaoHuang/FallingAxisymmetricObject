@@ -1,0 +1,44 @@
+/* Make Quarto reveal.js logo bigger */
+.reveal .slide-logo {
+  height: 80px !important;   /* force logo height */
+  width: auto !important;     /* maintain aspect ratio */
+  max-height: none !important;
+  max-width: none !important;
+  bottom: 0px !important;
+  right: 30px !important;
+}
+
+/* First slide background */
+.reveal .slides section:first-of-type {
+  color: rgb(238, 238, 238);              /* make text white */
+}
+
+#title-slide .title {
+    font-size: 2.5em;
+}
+#title-slide .subtitle {
+    color: rgb(56, 51, 148);
+    font-size: 1.5em;
+}
+
+.reveal .slide-logo {
+  z-index: -999 !important;
+}
+
+/* styles.css */
+
+.video-column {
+  /* 1. Force the contents to stack vertically */
+  display: flex;
+  flex-direction: column;
+  
+  /* 2. Optional: Center the entire column horizontally on the slide */
+  align-items: center; 
+  
+  /* 3. Optional: Add a gap (vertical spacing) between the videos */
+  gap: 20px; 
+}
+
+.reveal h2 {
+  color: rgb(56, 51, 148); /* Change to your desired color (e.g., a hex code or color name) */
+}
