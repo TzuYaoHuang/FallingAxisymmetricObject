@@ -15,11 +15,11 @@ title-slide-attributes:
   data-background-size: "170px"  
 format:
   revealjs: 
-    embed-resources: true
+    # embed-resources: true
     slide-number: true
-    # chalkboard: 
-    #   theme: whiteboard
-    #   buttons: true
+    chalkboard: 
+      theme: whiteboard
+      buttons: true
     preview-links: auto
     logo: imgs/TUDelft_logo.png 
     css: styles.css
