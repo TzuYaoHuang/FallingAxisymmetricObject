@@ -1,5 +1,0 @@
-# Re-include imgs and videos directories and their contents (override root ignores)
-!imgs/
-!imgs/**
-!videos/
-!videos/**
