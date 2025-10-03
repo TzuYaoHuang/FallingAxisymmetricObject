@@ -1,19 +1,36 @@
-using StaticArrays, Plots, Printf, WriteVTK, CSV, Tables
+using StaticArrays, Plots, Printf, WriteVTK, CSV, Tables, DataFrames
 
 using WaterLily, ParametricBodies
 using BiotSavartBCs
 
 using CUDA
 
-function main()
+# Include the mirror in x and y plane
+import BiotSavartBCs: interaction,image,symmetry
+@inline function symmetry(ω,T,args...) # overwrite to add image influences
+    T₁,sgn₁ = image(T,size(ω),-1)
+    T₂,sgn₂ = image(T,size(ω),-2)
+    T₁₂,_   = image(T₁,size(ω),-2)
+    return interaction(ω,T,args...)+sgn₁*interaction(ω,T₁,args...)+
+        sgn₂*(interaction(ω,T₂,args...)+sgn₁*interaction(ω,T₁₂,args...))
+end
+
+function determineMode(args)
+    if length(args) ==0 
+        error("Please specify the mode!")
+    end
+    modeFlag = args[1]
+    simulation = modeFlag=="run" || modeFlag=="all"
+    postProcess= modeFlag=="pp" || modeFlag=="all"
+    return simulation,postProcess
+end
+
+function run(N; mem=CuArray, T=Float32, tEnd=2)
     # +++ Simulation parameters +++
-    mem = CuArray
-    T = Float32
     zeroT = zero(T)
     oneT  = one(T)
 
     # +++ Controlling flow parameters +++
-    N = 192  # number of grid
     U = T(1)
 
     # +++ Derived flow parameters +++
@@ -55,7 +72,7 @@ function main()
     bodies = [sphere, prolate, bullet, teardrop]
     ReList = [9780, 19005, 12474, 101769]
     νList = U*D./ReList
-    bodyName=["sphere", "prolate", "bullet", "teardrop"]
+    bodyName=["Sphere", "Ellipsoid", "Bullet", "Teardrop"]
     NBody = length(bodies)
 
     # ++++ VTK Writer function
@@ -66,34 +83,56 @@ function main()
     custom_write_attributes = Dict("u" => vtk_v, "p" => vtk_p, "λ₂" => vtk_λ₂, "d" => vtk_body)
 
     # ++++ Generate Simulation
-    tEnd = 30
     simTime = 0:0.1:tEnd; NTime = length(simTime)
-    CdList = zeros(NBody, NTime) 
+    CdList = zeros(NTime,NBody) 
     for (iBody, body)∈enumerate(bodies)
         println("$(bodyName[iBody]) is falling now.")
-        sim = BiotSimulation((N÷2,N÷2,3N), uBC, R; ν=νList[iBody], body, mem, T, U)
-        wr = vtkWriter("Falling_$(bodyName[iBody])"; attrib=custom_write_attributes)
+
+        # disable BiotSavartBCs in -x, and -y faces
+        sim = BiotSimulation((N÷2,N÷2,3N), uBC, R; ν=νList[iBody], body, mem, T, U, nonbiotfaces=(-1,-2))
+        wr = vtkWriter("Falling_$(bodyName[iBody])_N$(N)"; attrib=custom_write_attributes)
 
         # Running Simulation!
         for (iTime,tᵢ) in enumerate(simTime)
             sim_step!(sim,tᵢ;remeasure=true)
-            @printf("tU/L= %5.2f\n", sim_time(sim))
+            @printf("tU/L= %5.2f\n", sim_time(sim)); flush(stdout)
             save!(wr, sim)
-            CdList[iBody,iTime] = -WaterLily.total_force(sim)[3]/(0.5*sim.U^2*A)
+            CdList[iTime,iBody] = -WaterLily.total_force(sim)[3]/(0.5*sim.U^2*A)
         end
         close(wr)
     end
-    CSV.write("../figure/Cd.csv",  Tables.table(CdList), writeheader=false)
+    CSV.write("../figure/Cd_N$(N).csv",  Tables.table(hcat(collect(simTime), CdList)), header=["t", bodyName...])
+end
+
+function postProcess(N)
+    # Read the file
+    f = open("../figure/Cd_N$(N).csv")
+    bodyName = split(readline(f), ",")[2:end] # read only first line
+    seekstart(f) # reset file pointer to beginning
+    AllList = Matrix(CSV.read(f, DataFrame, header=false, skipto=2)) # skip header
+    simTime = AllList[:,1]
+    CdList = AllList[:,2:end]
+    close(f)
 
     # +++ Post-processing
     for I∈CartesianIndices(CdList) CdList[I] = ifelse(abs(CdList[I])>10, NaN, CdList[I]) end
-    plot()
-    for (iBody, body)∈enumerate(bodies)
-        plot!(simTime, CdList[iBody,:],label=bodyName[iBody])
+    plot(size=(600,500))
+    for (iBody, nameB)∈enumerate(bodyName)
+        plot!(simTime, CdList[:,iBody],label=nameB)
     end
-    plot!(ylimit=(0,1), xlimit=(0,tEnd))
+    plot!(ylimit=(0,1), xlimit=(simTime[1],simTime[end]))
+    plot!(xlabel="rU/R", ylabel="Cd")
     savefig("../figure/CD_N$(N).png")
-
 end
 
-main()
+function main()
+    simu,pp = determineMode(ARGS)
+    N = parse(Int, ARGS[2])
+
+    simu && run(N)
+    pp && postProcess(N)
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
+end
