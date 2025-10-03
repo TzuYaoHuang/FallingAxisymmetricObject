@@ -32,8 +32,9 @@ $ julia --project -E 'using Pkg; Pkg.add(url="https://github.com/weymouth/BiotSa
 
 Forth, run the simulation!
 ```bash
-$ julia --project -t auto Falling.jl
+$ julia --project -t auto Falling.jl all 96
 ```
+You could replace `all` with `run` (just run the simulation) or `pp` (just plot the Cd plot). `96` means the number of grid in lateral directions. You can also change them
 
 Then there will be `.pvd` files generated at the end of the simulation. You could use ParaView to view the result!
 The drag coefficient plot comparison and data are also under directories `figure/`.
