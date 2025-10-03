@@ -25,7 +25,7 @@ function determineMode(args)
     return simulation,postProcess
 end
 
-function run(N; mem=CuArray, T=Float32, tEnd=2)
+function run(N; mem=CuArray, T=Float32, tEnd=30)
     # +++ Simulation parameters +++
     zeroT = zero(T)
     oneT  = one(T)
