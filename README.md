@@ -34,7 +34,7 @@ Slides for the class are available [here](https://manuel-cabral.github.io/Hydrom
 3. **Set up the environment**
 
    ```bash
-   julia --project -E 'using Pkg; Pkg.add(url="https://github.com/weymouth/BiotSavartBCs.jl.git", rev=true); Pkg.instantiate()'
+   julia --project -E 'using Pkg; Pkg.add(url="https://github.com/weymouth/BiotSavartBCs.jl.git"); Pkg.instantiate()'
    ```
 
 4. **Run the simulation**
