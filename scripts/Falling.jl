@@ -174,7 +174,7 @@ function postProcess(N)
             plot!(p1, simTime[valid_idx], CdData[valid_idx, i],
                 label = bodyName,
                 color = colors[mod1(i, length(colors))],
-                linestyle = line_styles[mod1(i, length(line_styles))],
+                linestyle = :solid,
                 linewidth = 2.5,
                 markershape = :none
             )
@@ -183,9 +183,7 @@ function postProcess(N)
     
     plot!(p1,
         xlabel = "Dimensionless Time (tU/R)",
-        ylabel = "Drag Coefficient (C_d)",
-        title = "Drag Coefficient Evolution - N=$N Grid Resolution",
-        titlefontsize = 14,
+        ylabel = "Drag Coefficient (Cd)",
         guidefontsize = 12,
         tickfontsize = 10,
         legendfontsize = 10,
@@ -232,7 +230,7 @@ function postProcess(N)
             time_avg = simTime[window_size:end][valid_idx[window_size:end]]
             
             plot!(p2, time_avg, moving_avg,
-                label = "$bodyName (Moving Avg)",
+                label = bodyName,
                 color = colors[mod1(i, length(colors))],
                 linewidth = 2,
                 alpha = 0.8
@@ -243,12 +241,10 @@ function postProcess(N)
     plot!(p2,
         xlabel = "Dimensionless Time (tU/R)",
         ylabel = "Cd (Moving Average)",
-        title = "Convergence Analysis - Moving Average",
-        titlefontsize = 12,
-        guidefontsize = 11,
-        tickfontsize = 9,
-        legendfontsize = 9,
-        legend = :right,
+        guidefontsize = 12,
+        tickfontsize = 10,
+        legendfontsize = 10,
+        legend = :best,
         xlims = (simTime[1], simTime[end])
     )
     
@@ -256,8 +252,8 @@ function postProcess(N)
     final_plot = plot(p1, p2, 
         layout = (2, 1), 
         size = (900, 1000),
-        plot_title = "Computational Fluid Dynamics Analysis",
-        plot_titlefontsize = 16
+        # title = "Drag Coefficient Evolution - N=$N Grid Resolution",
+        # titlefontsize = 14,
     )
     
     # Save in multiple formats
