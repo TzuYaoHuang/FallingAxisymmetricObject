@@ -11,9 +11,9 @@ Slides for the class are available [here](https://manuel-cabral.github.io/Hydrom
 
 ## Repository Structure
 
-- **ThreeD_Object/** - STL files for 3D printing (objects are sliced in half for printing).  
-- **scripts/** - Julia and Python scripts for running and post-processing simulations, and theoretical calculations.  
-- **figure/** - Example results, plots, and demo images.
+- **ThreeD_Object/** - STL files for 3D printing (objects are sliced in half for printing) and the properties.  
+- **scripts/** - Julia and Python scripts for [running and post-processing simulations](scripts/Falling.jl), and [theoretical calculations](scripts/aux_calculations.py).  
+- **figure/** - Storage for results, plots, and demo images.
 
 
 ## Running the Simulation (Julia)
