@@ -1,6 +1,6 @@
 # FallingAxisymmetricObject
 
-[![Falling objects](figure/FallingObjectSimulation.png)](https://youtu.be/4_bd3tomnOg)
+[![Falling objects](figure/FallingObjectSimulation.png)](https://www.youtube.com/watch?v=zvbs63yDzLs)
 
 This repository contains the simulation and 3D printing files used in the *Falling Object* demonstration for the course **MT2461-25** at TU Delft, lectured by Prof. Gabriel Weymouth.  
 - Physics demo: Manuel Cabral  
