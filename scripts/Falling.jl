@@ -4,7 +4,7 @@ using Statistics
 using WaterLily, ParametricBodies
 using BiotSavartBCs
 
-# using CUDA
+using CUDA
 
 # Include the mirror in x and y plane
 import BiotSavartBCs: interaction,image,symmetry
